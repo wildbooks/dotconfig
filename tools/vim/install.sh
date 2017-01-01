@@ -1,6 +1,8 @@
 #! /usr/bin/bash
 
+CMD=dnf
 # First install nvim
+sudo $CMD install nvim
 
 # download SpaceVim
 git clone https://github.com/SpaceVim/SpaceVim.git nvim
