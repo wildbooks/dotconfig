@@ -10,14 +10,9 @@ sudo $CMD install nvim
 # download SpaceVim
 git clone https://github.com/SpaceVim/SpaceVim.git nvim
 
-# config 环境变量
-echo "">>~/.bashrc
-echo "# nvim HOME">>~/.bashrc
-echo "export XDG_CONFIG_HOME=`pwd`" >>~/.bashrc
+# user config
+ln -s `pwd`/nvim  ~/.config/nvim
 
-echo "">>/root/.bashrc
-echo "# nvim HOME">>/root/.bashrc
-echo "export XDG_CONFIG_HOME=`pwd`" >>/root/.bashrc
-source ~/.bashrc
-
+# root config
+sudo ln -s `pwd`/nvim /root/.config/nvim
 sudo ln -s ${HOME}/$VIMFILES_PATH /root/${VIMFILES_PATH}
