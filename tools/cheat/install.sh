@@ -19,4 +19,4 @@ sudo pip install docopt pygments
  cd cheat
  sudo python setup.py install
 
-rm -rf ../cheat
+sudo rm -rf ../cheat
