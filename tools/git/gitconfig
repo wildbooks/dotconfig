@@ -1,0 +1,6 @@
+[user]
+	email = www762268@foxmail.com
+	name = wildbook
+[core]
+	editor = vim
+	quotepath = false

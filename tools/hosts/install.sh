@@ -1,7 +1,7 @@
 #! /usr/bin/bash
 
 # backup hosts
-sudo mv /etc/hosts /etc/hosts_back
+#sudo mv /etc/hosts /etc/hosts_back
 
-
-sudo cp hosts /etc/hosts
+git clone https://github.com/racaljk/hosts.git
+sudo ln -s `pwd`/hosts/hosts /etc/hosts

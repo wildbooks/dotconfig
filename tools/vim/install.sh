@@ -5,11 +5,11 @@ HOME=/home/`whoami`
 VIMFILES_PATH=.cache/vimfiles
 
 # First install nvim
-sudo $CMD install nvim
+sudo $CMD install neovim ctags cscope
 
 # download SpaceVim
 git clone https://github.com/SpaceVim/SpaceVim.git SpaceVim
-git clone https://github.com/wildbooks/SpaceVim.d.git SpaceVim.d
+#git clone https://github.com/wildbooks/SpaceVim.d.git SpaceVim.d
 
 # user config
 ln -s `pwd`/SpaceVim  ~/.config/nvim
