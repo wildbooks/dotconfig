@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#! /bin/bash
 
 # backup hosts
 #sudo mv /etc/hosts /etc/hosts_back
