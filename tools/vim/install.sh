@@ -16,6 +16,6 @@ ln -s `pwd`/SpaceVim  ~/.config/nvim
 ln -s `pwd`/SpaceVim.d  ~/.SpaceVim.d
 
 # root config
-suod ln -s `pwd`/SpaceVim.d  /root/.SpaceVim.d
+sudo ln -s `pwd`/SpaceVim.d  /root/.SpaceVim.d
 sudo ln -s `pwd`/SpaceVim /root/.config/nvim
 sudo ln -s ${HOME}/$VIMFILES_PATH /root/${VIMFILES_PATH}
