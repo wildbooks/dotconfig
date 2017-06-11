@@ -32,6 +32,8 @@ endif
 let g:clang2_placeholder_next = ''
 let g:clang2_placeholder_prev = ''
 
+" Custom SPC mapping
+" call SpaceVim#custom#SPC('nnoremap', ['f', 't'], 'echom "hello world"', 'test custom SPC', 1)
 
 "##############################################
 "##           custom configs                 ##
@@ -46,7 +48,8 @@ set tags=tags
 "set tags+=./tags
 set tags+=/home/wildbook/Code/n8976/external/x264_test/tags
 
-
+" use space as `<Leader>`,默认"\"
+let g:mapleader = ','
 
 " Here are some basic customizations,
 " please refer to the ~/.SpaceVim.d/init.vim
@@ -138,9 +141,6 @@ set tags+=/home/wildbook/Code/n8976/external/x264_test/tags
 " let g:spacevim_buffer_index_type = 1
 
 
-" use space as `<Leader>`,默认"\"
-"let mapleader = "\<space>"
-"
 "" By default, language specific plugins are not loaded. This can be changed
 "" with the following, then the plugins for go development will be loaded.
 "call SpaceVim#layers#load('shell')
