@@ -4,3 +4,5 @@
 [core]
 	editor = vim
 	quotepath = false
+[merge]
+	tool = diff

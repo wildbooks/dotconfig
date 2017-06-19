@@ -1,7 +1,9 @@
 #! /bin/bash
 
-# backup hosts
-#sudo mv /etc/hosts /etc/hosts_back
-
 git clone https://github.com/racaljk/hosts.git
-sudo ln -s `pwd`/hosts/hosts /etc/hosts
+
+# user config
+if [ ! -L /etc/hosts ]; then #软连接文件不存在
+    sudo mv /etc/hosts /etc/hosts_back  #back up
+    sudo ln -s `pwd`/hosts/hosts /etc/hosts
+fi

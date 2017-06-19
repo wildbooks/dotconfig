@@ -8,8 +8,14 @@ git clone https://github.com/syl20bnr/spacemacs.git -b develop
 git clone https://github.com/zilongshanren/spacemacs-private.git
 
 #user configs
-ln -s `pwd`/spacemacs ~/.emacs.d
-ln -s `pwd`/spacemacs-private ~/.spacemacs.d
+if [ ! -L ~/.emacs.d ]; then #软连接文件不存在
+    rm -rf ~/.emacs.d
+    ln -s `pwd`/spacemacs ~/.emacs.d
+fi
+if [ ! -L ~/.spacemacs.d]; then #软连接文件不存在
+    rm -rf ~/.spacemacs.d
+    ln -s `pwd`/spacemacs-private ~/.spacemacs.d
+fi
 
 #root configs
 sudo ln -s `pwd`/spacemacs /root/.emacs.d
