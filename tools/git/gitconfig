@@ -2,7 +2,7 @@
 	email = www762268@foxmail.com
 	name = wildbook
 [core]
-	editor = vim
+	editor = nvim
 	quotepath = false
 [merge]
 	tool = diff
