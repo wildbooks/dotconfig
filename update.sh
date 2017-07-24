@@ -15,12 +15,17 @@ White='\033[0;37m'              # White白色
 
 echo -e "${Red}Update Configs Begin${Color_off}"
 # update dotconfig
+echo -n "Update dotconfig\t"
 git pull
 # update SpaceVim
+echo -n "Update SpaceVim\t"
 git -C tools/vim/SpaceVim pull
 # Uptate Spacemacs
+echo -n "Update Spacemacs\t"
 git -C tools/emacs/spacemacs pull
 git -C tools/emacs/spacemacs-private pull
+echo -n "Update hosts\t"
 git -C tools/hosts/hosts pull
+echo -n "Update tmux\t"
 git -C tools/tmux/tmux pull
 echo -e "${Red}Update Configs End${Color_off}"
