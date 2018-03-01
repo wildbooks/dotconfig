@@ -12,7 +12,7 @@ if [ ! -L ~/.emacs.d ]; then #软连接文件不存在
     rm -rf ~/.emacs.d
     ln -s `pwd`/spacemacs ~/.emacs.d
 fi
-if [ ! -L ~/.spacemacs.d]; then #软连接文件不存在
+if [ ! -L ~/.spacemacs.d ]; then #软连接文件不存在
     rm -rf ~/.spacemacs.d
     ln -s `pwd`/spacemacs-private ~/.spacemacs.d
 fi

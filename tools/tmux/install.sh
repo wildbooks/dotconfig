@@ -3,7 +3,12 @@
 CMD=dnf
 
 # First install tmux tmuxinator
-sudo $CMD install tmux tmuxinator
+type tmux
+if [ ! $? ]; then #null
+  sudo $CMD install tmux tmuxinator
+else
+  echo "tmux has installed"
+fi
 
 git clone https://github.com/gpakosz/.tmux.git  tmux
 # user configs

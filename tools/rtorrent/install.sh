@@ -3,8 +3,13 @@
 CMD=dnf
 HOME=/home/`whoami`
 
-# First install rtorrent 
-sudo $CMD install rtorrent
+# First install rtorrent
+type tmux
+if [ ! $? ]; then #null
+  sudo $CMD install rtorrent
+else
+  echo "tmux has installed"
+fi
 
 # user configs
 if [ ! -L ~/.rtorrent.rc ]; then #软连接文件不存在
