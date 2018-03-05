@@ -1,5 +1,6 @@
 #! /usr/bin/bash
-CMD=dnf
+source ../../functions.sh
+
 # First install emacs
 sudo  $CMD install emacs
 # 官方配置

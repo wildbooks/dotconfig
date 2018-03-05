@@ -17,3 +17,15 @@ sudo dnf remove firefox gnome-maps gedit gnome-contacts rhythmbox -y
 # 解决中文路径问题
 export LANG=en_US.UTF-8
 xdg-user-dirs-gtk-update
+
+
+# 通用函数
+cmd_exists()
+{
+  `command -v $1`
+  printf $?
+}
+get_cmd()
+{
+  printf `command -v dnf`|| `command -v yum`|| `command -v apt-get`
+}

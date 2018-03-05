@@ -3,11 +3,11 @@
 CMD=dnf
 
 # First install tmux tmuxinator
-type tmux
+type tmux >/dev/null 2>&1
 if [ ! $? ]; then #null
-  sudo $CMD install tmux tmuxinator
+    sudo $CMD install tmux #tmuxinator
 else
-  echo "tmux has installed"
+    echo "tmux has installed"
 fi
 
 git clone https://github.com/gpakosz/.tmux.git  tmux
@@ -17,9 +17,28 @@ if [ ! -L ~/.tmux.conf ]; then #软连接文件不存在
     ln -s `pwd`/tmux/.tmux.conf ~/.tmux.conf
 fi
 
-if [ ! -L ~/.emacs.d ]; then #软连接文件不存在
+if [ ! -L ~/.tmux.conf.local ]; then #软连接文件不存在
     rm -rf ~/.tmux.conf.local
     ln -s `pwd`/tmux/.tmux.conf.local ~/.tmux.conf.local
 fi
 # root config
 #sudo ln -s `pwd`/tmux.conf /root/.tmux.conf
+
+
+InstallApp tmux
+
+function InstallTmux()
+{
+    echo "tmux has installed"
+}
+
+function ConfigTmux()
+{
+    echo "tmux has installed"
+}
+
+function Tmux()
+{ 
+    InstallTmux
+    ConfigTmux
+}

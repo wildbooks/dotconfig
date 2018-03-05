@@ -56,7 +56,7 @@ let g:mapleader = ','
 " file for all possible options:
 
 " 默认缩进，默认2
-" let g:spacevim_default_indent = 4
+let g:spacevim_default_indent = 4
 
 " 默认最大列数,默认值120
 " let g:spacevim_max_column     = 80
@@ -108,7 +108,7 @@ let g:mapleader = ','
 " let g:spacevim_terminal_cursor_shape = 1
 
 " 设置帮助文档语言.默认为'en'
-" let g:spacevim_vim_help_language = 'chinese'
+let g:spacevim_vim_help_language = 'chinese'
 
 " 设置vim的消息语言,默认'en_US.UTF-8'
 " let g:spacevim_language = 'en_CA.utf8'
@@ -143,7 +143,6 @@ let g:mapleader = ','
 
 "" By default, language specific plugins are not loaded. This can be changed
 "" with the following, then the plugins for go development will be loaded.
-"call SpaceVim#layers#load('shell')
 "call SpaceVim#layers#load('tmux')
 "" loaded c layers
 "call SpaceVim#layers#load('lang#c')
@@ -167,3 +166,4 @@ let g:mapleader = ','
 "            \ ['plasticboy/vim-markdown', {'on_ft' : 'markdown'}],
 "            \ ['wsdjeg/GitHub.vim'],
 "            \ ]
+let g:chromatica#libclang_path='/usr/lib64/libclang.so'
