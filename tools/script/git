@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+# file create by liunianliang 2016.06.22
+# for check git commit formater and branch
+#
+
+function gettop
+{
+    local TOPFILE=build/core/envsetup.mk
+    if [ -n "$TOP" -a -f "$TOP/$TOPFILE" ] ; then
+        # The following circumlocution ensures we remove symlinks from TOP.
+        (cd $TOP; PWD= /bin/pwd)
+    else
+        if [ -f $TOPFILE ] ; then
+            # The following circumlocution (repeated below as well) ensures
+            # that we record the true directory name and not one that is
+            # faked up with symlink names.
+            PWD= /bin/pwd
+        else
+            local HERE=$PWD
+            T=
+            while [ \( ! \( -f $TOPFILE \) \) -a \( $PWD != "/" \) ]; do
+                \cd ..
+                T=`PWD= /bin/pwd -P`
+            done
+            \cd $HERE
+            if [ -f "$T/$TOPFILE" ]; then
+                echo $T
+            fi
+        fi
+    fi
+}
+
+#check commit
+if [ "$1" == "commit" ] && [ "$2" == "-m" -o "$2" == "-am" ] && [ -n "$3" ]
+then
+	T=$(gettop)
+	if [ "$T" ] && [ -e "$T/huaqin/build/jar/checkCommit.jar" ];then
+	$T/huaqin/build/jar/checkCommit.jar "$3"
+		if [ $? = 255 ];then
+			exit
+		fi
+	fi
+fi
+
+#check branch
+#git push origin HEAD:refs/for/xxx
+if [ "$1" == "push" ] && [ "$2" == "origin" ] && [ -n "$3" ] && [[ "$3" =~ "HEAD:refs/for" ]]
+then
+	T=$(gettop)
+	if [ "$T" ];then
+		my_mainfest_branch=`grep -r "<default revision"  $T/.repo/manifest.xml | awk -F '"' '{print $(NF-1)}'`
+		myBranch=`git branch | grep -w "*" | awk -F ' ' '{print $NF}'`
+		if [ -z "$myBranch" ];then
+			myBranch=$my_mainfest_branch
+		fi
+		my_upstream_branch=`git config -l | grep branch.$myBranch.merge | awk -F '=' '{print $NF}' | awk -F '/' '{print $NF}'`
+		if [ -z "$my_upstream_branch" ];then
+			my_upstream_branch=$my_mainfest_branch
+		fi
+
+		want_topush_branch=`echo $3 | awk -F '/' '{print $NF}'`
+
+		#start to check
+		if [ $my_upstream_branch != "$want_topush_branch" ];then
+			echo -e "*"
+			echo -e "* \033[0;31mERROR: Branch Error\033[0m"
+			echo -e "*"
+			echo -e "* Unfortunately,your local branch is not upstream the server branch !!!"
+			echo -e "*"
+			echo -e "* Your local branch is upstream to:      \033[0;31m$my_upstream_branch\033[0m"
+			echo -e "* The server branch you want to push is: \033[0;31m$want_topush_branch\033[0m"
+			echo -e "*"
+			echo -e "* Please check your local branch again !!!"
+			echo -e "*"
+			echo -e "* If you have some questions,please contact platform group."
+			echo -e "*"
+			exit
+		fi
+	fi
+fi
+
+/usr/bin/git "$@"
+
