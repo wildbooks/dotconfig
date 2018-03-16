@@ -4,7 +4,7 @@
 #=============		help
 function Usages()
 {
-	echo "zore"	
+	echo "zore"
 }
 
 if [ -z $2 ];then
@@ -21,7 +21,7 @@ function switchProjects()
 #=============		编译
 function MakeProjects()
 {
-	echo "zore"	
+	echo "zore"
 }
 # command flash	<Project>
 #=============		刷机
@@ -102,7 +102,7 @@ function FlashImages()
 #=============		签名
 function Flashhhhhs()
 {
-	echo "zore"	
+	echo "zore"
 }
 
 #=============		远程登录
@@ -110,45 +110,51 @@ function ssh-login()
 {
 	case $1 in
 		##	firm ##
-		sunqian) echo "ssh archermind@10.20.11.51"
+		sunqian|51) echo "ssh archermind@10.20.11.51"
 			ssh archermind@10.20.11.51
 		;;
 		scpsunqian) echo "scp archermind@10.20.11.51"
 			scp archermind@10.20.11.50:/ .
 		;;
-		lize) echo "ssh archermind@10.20.11.183"
+		lize|183) echo "ssh archermind@10.20.11.183"
 			ssh archermind@10.20.11.183
 		;;
-		chunhua) echo "ssh root@10.20.11.192" #111
+		chunhua|192) echo "ssh root@10.20.11.192" #111
 			ssh root@10.20.11.192
 		;;
-		youcun) echo "ssh archermind@10.20.11.21"
+		youcun|21) echo "ssh archermind@10.20.11.21"
 			ssh archermind@10.20.11.21
 		;;
-		songpeng) echo "ssh archermind@10.20.11.114"
+		songpeng|114) echo "ssh archermind@10.20.11.114"
 			ssh archermind@10.20.11.114
 		;;
-		zhanglei) echo "ssh archermind@10.20.11.79"
+		zhanglei|79) echo "ssh archermind@10.20.11.79"
 			ssh archermind@10.20.11.79
+		;;
+		yanhua|23) echo "ssh archermind@10.20.11.23"
+			ssh archermind@10.20.11.23
 		;;
 
 		##	firm server ##
-		main) echo "ssh archermind@10.20.11.11"
+		main|11) echo "ssh archermind@10.20.11.11"
 			ssh archermind@10.20.11.11
 		;;
-		main1) echo "ssh archermind@10.20.11.116"
+		main0|10) echo "ssh archermind@10.20.11.10"
+			ssh archermind@10.20.11.10
+		;;
+		main1|116) echo "ssh archermind@10.20.11.116"
 			ssh archermind@10.20.11.116
 		;;
-		main2) echo "ssh archermind@10.20.11.56"
+		main2|56) echo "ssh archermind@10.20.11.56"
 			ssh archermind@10.20.11.56
 		;;
-		main3) echo "ssh archermind@10.20.11.162"
+		main3|162) echo "ssh archermind@10.20.11.162"
 			ssh archermind@10.20.11.162
 		;;
-		main4) echo "ssh archermind@10.20.11.151"
+		main4|151) echo "ssh archermind@10.20.11.151"
 			ssh archermind@10.20.11.151
 		;;
-		main5) echo "ssh archermind@10.20.11.65"
+		main5|65) echo "ssh archermind@10.20.11.65"
 			ssh archermind@10.20.11.65
 		;;
 
@@ -163,7 +169,7 @@ function ssh-login()
 	esac
 }
 
-#=============		切换项目目录 
+#=============		切换项目目录
 function switch()
 {
 	case $1 in
@@ -198,15 +204,15 @@ main $1 $2
 #		a) echo "fsaffsafsf"
 #	esac
 #done
-#echo "\$0=$0 \$1=$1 $$" 
+#echo "\$0=$0 \$1=$1 $$"
 
-#while getopts "a:" opts; do  
-#  case $opts in  
-#    a)  
-#      echo "this is -a the arg is ! $OPTARG"   
-#      ;;  
-#    \?)  
-#      echo "Invalid option: -$OPTARG"   
-#      ;;  
-#  esac  
-#done 
+#while getopts "a:" opts; do
+#  case $opts in
+#    a)
+#      echo "this is -a the arg is ! $OPTARG"
+#      ;;
+#    \?)
+#      echo "Invalid option: -$OPTARG"
+#      ;;
+#  esac
+#done
