@@ -2,14 +2,7 @@
 
 
 #=============		help
-function Usages()
-{
-	echo "zore"
-}
 
-if [ -z $2 ];then
-	Usages
-fi
 # command cd	<Project>
 function switchProjects()
 {
@@ -66,34 +59,32 @@ function FlashImages()
 
 	case $aNum in	#用循环解决这个问题
 
-	    # bootimage-nodeps
+	    # flash aboot
 	    aboot)  echo "flashing boot"
-	        sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn reboot
+	        sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
 	    ;;
 	    reaboot)  echo "rebooting && flashing aboot"
-	        adb reboot-bootloader && sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn reboot
+	        adb reboot-bootloader && sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
 	    ;;
 
-	    # bootimage-nodeps
-	    boot)  echo "flashing boot"
-	        sudo fastboot flash boot $ANDROID_PRODUCT_OUT/boot.img reboot
+	    # flash boot
+	    boot|system|userdata)  echo "flashing $aNum"
+	        sudo fastboot flash $aNum $ANDROID_PRODUCT_OUT/$aNum.img
 	    ;;
 	    reboot)  echo "rebooting && flashing boot"
-	        adb reboot-bootloader && sudo fastboot flash boot $ANDROID_PRODUCT_OUT/boot.img reboot
+	        adb reboot-bootloader && sudo fastboot flash boot $ANDROID_PRODUCT_OUT/boot.img
 	    ;;
 
-		# systemimage-nodeps
-	    system)  echo "flashing system"
-	        sudo fastboot flash system $ANDROID_PRODUCT_OUT/system.img reboot
-		;;
 	    resystem)  echo "rebooting && flashing system"
-	        adb reboot-bootloader && sudo fastboot flash system $ANDROID_PRODUCT_OUT/system.img reboot
+	        adb reboot-bootloader && sudo fastboot flash system $ANDROID_PRODUCT_OUT/system.img
 	    ;;
 
-		# userdataimage-nodeps
+	    # flash modem
+	    # flash userdata
+	    # flash userdata
 
 	    8)  echo "make && rebooting && flashing system"
-	        make systemimage && adb reboot-bootloader && sudo fastboot flash system $ANDROID_PRODUCT_OUT/system.img reboot
+	        make systemimage && adb reboot-bootloader && sudo fastboot flash system $ANDROID_PRODUCT_OUT/system.img
 	    ;;
 	    *)   echo "Don't have this choise!"
 	esac
@@ -110,63 +101,63 @@ function ssh-login()
 {
 	case $1 in
 		##	firm ##
-		sunqian|51) echo "ssh archermind@10.20.11.51"
-			ssh archermind@10.20.11.51
+		sunqian|51)
+			NAME=archermind@10.20.11.51
 		;;
-		scpsunqian) echo "scp archermind@10.20.11.51"
-			scp archermind@10.20.11.50:/ .
+		lize|183)
+			NAME=archermind@10.20.11.183
 		;;
-		lize|183) echo "ssh archermind@10.20.11.183"
-			ssh archermind@10.20.11.183
+		chunhua|192)
+			NAME=root@10.20.11.192 #111
 		;;
-		chunhua|192) echo "ssh root@10.20.11.192" #111
-			ssh root@10.20.11.192
+		youcun|21)
+			NAME=archermind@10.20.11.21
 		;;
-		youcun|21) echo "ssh archermind@10.20.11.21"
-			ssh archermind@10.20.11.21
+		songpeng|114)
+			NAME=archermind@10.20.11.114
 		;;
-		songpeng|114) echo "ssh archermind@10.20.11.114"
-			ssh archermind@10.20.11.114
+		zhanglei|79)
+			NAME=archermind@10.20.11.79
 		;;
-		zhanglei|79) echo "ssh archermind@10.20.11.79"
-			ssh archermind@10.20.11.79
-		;;
-		yanhua|23) echo "ssh archermind@10.20.11.23"
-			ssh archermind@10.20.11.23
+		yanhua|23)
+			NAME=archermind@10.20.11.23
 		;;
 
 		##	firm server ##
-		main|11) echo "ssh archermind@10.20.11.11"
-			ssh archermind@10.20.11.11
+		main|11)
+			NAME=archermind@10.20.11.11
 		;;
-		main0|10) echo "ssh archermind@10.20.11.10"
-			ssh archermind@10.20.11.10
+		main0|10)
+			NAME=archermind@10.20.11.10
 		;;
-		main1|116) echo "ssh archermind@10.20.11.116"
-			ssh archermind@10.20.11.116
+		main1|116)
+			NAME=archermind@10.20.11.116
 		;;
-		main2|56) echo "ssh archermind@10.20.11.56"
-			ssh archermind@10.20.11.56
+		main2|56)
+			NAME=archermind@10.20.11.56
 		;;
-		main3|162) echo "ssh archermind@10.20.11.162"
-			ssh archermind@10.20.11.162
+		main3|162)
+			NAME=archermind@10.20.11.162
 		;;
-		main4|151) echo "ssh archermind@10.20.11.151"
-			ssh archermind@10.20.11.151
+		main4|151)
+			NAME=archermind@10.20.11.151
 		;;
-		main5|65) echo "ssh archermind@10.20.11.65"
-			ssh archermind@10.20.11.65
+		main5|65)
+			NAME=archermind@10.20.11.65
 		;;
 
 		##	me ##
-		vps) echo "ssh -p 28556 root@184.170.212.253"
-			ssh -p 28556 root@184.170.212.253
+		vps)
+			NAME="-p 28556 root@184.170.212.253"
 		;;
-		vps1) echo "ssh -p 28556 root@184.170.212.253"
-			ssh -p 28556 root@184.170.212.253
+		vps1)
+			NAME="-p 28556 root@184.170.212.253"
 		;;
 		*) echo "ssh-login() Don't have this choise!"
 	esac
+
+	echo "ssh $NAME"
+	ssh $NAME
 }
 
 #=============		切换项目目录
@@ -192,27 +183,70 @@ main()
 	switch $1 $2
 }
 
-main $1 $2
+#main $1 $2
 
 
 #if [ -z $1 ]; then
 #	echo "please run \"source build/envsetup.sh\" in rootfs of source"
 #fi
 #
-#while getopts :a:b:cdefg opt; do
-#	case $opts in
-#		a) echo "fsaffsafsf"
-#	esac
-#done
-#echo "\$0=$0 \$1=$1 $$"
 
-#while getopts "a:" opts; do
-#  case $opts in
-#    a)
-#      echo "this is -a the arg is ! $OPTARG"
-#      ;;
-#    \?)
-#      echo "Invalid option: -$OPTARG"
-#      ;;
-#  esac
-#done
+function Usages()
+{
+     echo -e  "
+     Usage: work [OPTION]... [URL]...
+
+        -V,  --version           display the version of Wget and exit.
+        -h,  --help              print this help.
+        -s name     ssh
+        -f image    fastboot flash
+        -a          adb
+     "
+
+}
+
+#
+#	main
+#
+
+if [ -z $1 ];then
+	Usages
+	exit
+elif ["-"!=${1:0:1}];then
+
+	
+
+fi
+
+
+echo fafas
+#function GetOpts()
+#{  
+	while getopts "s:f:h" OPTION; do
+		case $OPTION in
+
+		h)
+		Usages
+		;;
+
+		s)
+		ssh-login $OPTARG
+		;;
+
+		f)
+		echo "sudo fastboot flash $OPTARG ${OPTARG}.img"
+		;;
+
+		*)
+		Usages
+		;;
+
+		?)
+		echo "ssh"
+		;;
+
+		esac
+	done
+
+#}
+
