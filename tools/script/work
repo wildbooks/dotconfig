@@ -1,252 +1,224 @@
 #! /bin/bash
 
+#=============		MyPrint
+# Color
+Color_off='\033[0m'       # Text Reset
+Black='\033[0;30m'              # Black黑
+Red='\033[0;31m'                # Red
+Green='\033[0;32m'              # Green绿
+Yellow='\033[0;33m'             # Yellow黄
+Blue='\033[0;34m'               # Blue蓝色
+Purple='\033[0;35m'             # Purple紫色
+SkyBlue='\033[0;36m'            # SkyBlue天蓝色
+White='\033[0;37m'              # White白色
 
-#=============		help
+function MyPrint()
+{
+    echo -e "$1$2${Color_off}\t"
+}
+
 
 # command cd	<Project>
 function switchProjects()
 {
-	echo "cd /work/$1"
-	$(cd /work/;pwd)
+    echo "cd /work/$1"
+    $(cd /work/;pwd)
 }
 
 # command make	<Project>
 #=============		编译
 function MakeProjects()
 {
-	echo "zore"
+    echo "zore"
 }
+
 # command flash	<Project>
 #=============		刷机
 function FlashImages()
 {
 
-	# 1. 判断是否重启
-	# 2. 循环刷机
-	# 3. 重启系统
+    # 1. 判断是否重启
+    # 2. 循环刷机
+    # 3. 重启系统
 
-	#if [ -z $1 ]; then
-	#	echo "please run \"source build/envsetup.sh\" in rootfs of source"
-	#fi
+    if [ -z $ANDROID_PRODUCT_OUT ]; then
+        MyPrint $Red "please run \"source build/envsetup.sh\" in rootfs of source"
+        exit
+    fi
 
-	#ANDROID_BUILD_TOP 代码根目录
-	#ANDROID_PRODUCT_OUT
-	#if [ -z android ];then
-	#	mkdir -p /tmp/android
-	#fi
+    #ANDROID_BUILD_TOP 代码根目录
+    #ANDROID_PRODUCT_OUT
+    #if [ -z android ];then
+    #	mkdir -p /tmp/android
+    #fi
 
-	aNum=$1
-	#case $1 in
-	#	sku1)
-	#		ANDROID_PRODUCT_OUT=/work/sku1/out/target/product/msm8937_64
-	#	;;
-	#	sku2)
-	#		ANDROID_PRODUCT_OUT=/work/sku2/out/target/product/msm8937_64
-	#	;;
-	#	sku5)
-	#		ANDROID_PRODUCT_OUT=/work/sku5/out/target/product/msm8937_64
-	#	;;
-	#	sku6)
-	#		ANDROID_PRODUCT_OUT=/work/sku6/out/target/product/msm8937_64
-	#	;;
-	#	sku9)
-	#		ANDROID_PRODUCT_OUT=/work/sku9/out/target/product/msm8937_64
-	#	;;
-	#	*)
-	#		ANDROID_PRODUCT_OUT=/work/SKU5_BP_8940_O_sign_wingtech/out/target/product/msm8937_64
-	#	;;
-	#esac
+    aNum=$1
+    #case $1 in
+    #	sku1)
+    #		ANDROID_PRODUCT_OUT=/work/sku1/out/target/product/msm8937_64
+    #	;;
+    #	sku2)
+    #		ANDROID_PRODUCT_OUT=/work/sku2/out/target/product/msm8937_64
+    #	;;
+    #	sku5)
+    #		ANDROID_PRODUCT_OUT=/work/sku5/out/target/product/msm8937_64
+    #	;;
+    #	sku6)
+    #		ANDROID_PRODUCT_OUT=/work/sku6/out/target/product/msm8937_64
+    #	;;
+    #	sku9)
+    #		ANDROID_PRODUCT_OUT=/work/sku9/out/target/product/msm8937_64
+    #	;;
+    #	*)
+    #		ANDROID_PRODUCT_OUT=/work/SKU5_BP_8940_O_sign_wingtech/out/target/product/msm8937_64
+    #	;;
+    #esac
 
-	case $aNum in	#用循环解决这个问题
+    case $aNum in	#用循环解决这个问题
 
-	    # flash aboot
-	    aboot)  echo "flashing boot"
-	        sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
-	    ;;
-	    reaboot)  echo "rebooting && flashing aboot"
-	        adb reboot-bootloader && sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
-	    ;;
+    # flash aboot
+    aboot)  MyPrint $Green "flashing boot"
+        sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
+        ;;
+    reaboot)  MyPrint $Green "rebooting && flashing aboot"
+        adb reboot-bootloader && sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
+        ;;
 
-	    # flash boot
-	    boot|system|userdata)  echo "flashing $aNum"
-	        sudo fastboot flash $aNum $ANDROID_PRODUCT_OUT/$aNum.img
-	    ;;
-	    reboot)  echo "rebooting && flashing boot"
-	        adb reboot-bootloader && sudo fastboot flash boot $ANDROID_PRODUCT_OUT/boot.img
-	    ;;
-
-	    resystem)  echo "rebooting && flashing system"
-	        adb reboot-bootloader && sudo fastboot flash system $ANDROID_PRODUCT_OUT/system.img
-	    ;;
-
-	    # flash modem
-	    # flash userdata
-	    # flash userdata
-
-	    8)  echo "make && rebooting && flashing system"
-	        make systemimage && adb reboot-bootloader && sudo fastboot flash system $ANDROID_PRODUCT_OUT/system.img
-	    ;;
-	    *)   echo "Don't have this choise!"
-	esac
+    # flash image
+    boot|system|userdata|recovery|cache)
+        MyPrint $Green "sudo fastboot flash $aNum $ANDROID_PRODUCT_OUT/$aNum.img"
+        sudo fastboot flash $aNum $ANDROID_PRODUCT_OUT/$aNum.img
+        ;;
+    # reboot && flash image
+    reboot|resystem|reuserdata|rerecovery|recache)
+        MyPrint $Green "adb reboot-bootloader && sudo fastboot flash ${aNum:2} $ANDROID_PRODUCT_OUT/${aNum:2}.img"
+        adb reboot-bootloader && sudo fastboot flash ${aNum:2} $ANDROID_PRODUCT_OUT/${aNum:2}.img
+        ;;
+    # flash modem
+    *) MyPrint $Red "Don't have this choise!"
+    esac
 }
 
 #=============		签名
 function Flashhhhhs()
 {
-	echo "zore"
+    echo "zore"
 }
 
 #=============		远程登录
 function ssh-login()
 {
-	case $1 in
-		##	firm ##
-		sunqian|51)
-			NAME=archermind@10.20.11.51
-		;;
-		lize|183)
-			NAME=archermind@10.20.11.183
-		;;
-		chunhua|192)
-			NAME=root@10.20.11.192 #111
-		;;
-		youcun|21)
-			NAME=archermind@10.20.11.21
-		;;
-		songpeng|114)
-			NAME=archermind@10.20.11.114
-		;;
-		zhanglei|79)
-			NAME=archermind@10.20.11.79
-		;;
-		yanhua|23)
-			NAME=archermind@10.20.11.23
-		;;
+    case $1 in
+    ##	firm ##
+    sunqian|51)
+        NAME=archermind@10.20.11.51
+        ;;
+    lize|183)
+        NAME=archermind@10.20.11.183
+        ;;
+    chunhua|192)
+        NAME=root@10.20.11.192 #111
+        ;;
+    youcun|21)
+        NAME=archermind@10.20.11.21
+        ;;
+    songpeng|114)
+        NAME=archermind@10.20.11.114
+        ;;
+    zhanglei|79)
+        NAME=archermind@10.20.11.79
+        ;;
+    yanhua|23)
+        NAME=archermind@10.20.11.23
+        ;;
 
-		##	firm server ##
-		main|11)
-			NAME=archermind@10.20.11.11
-		;;
-		main0|10)
-			NAME=archermind@10.20.11.10
-		;;
-		main1|116)
-			NAME=archermind@10.20.11.116
-		;;
-		main2|56)
-			NAME=archermind@10.20.11.56
-		;;
-		main3|162)
-			NAME=archermind@10.20.11.162
-		;;
-		main4|151)
-			NAME=archermind@10.20.11.151
-		;;
-		main5|65)
-			NAME=archermind@10.20.11.65
-		;;
+    ##	firm server ##
+    main|11)
+        NAME=archermind@10.20.11.11
+        ;;
+    main0|10)
+        NAME=archermind@10.20.11.10
+        ;;
+    main1|116)
+        NAME=archermind@10.20.11.116
+        ;;
+    main2|56)
+        NAME=archermind@10.20.11.56
+        ;;
+    main3|162)
+        NAME=archermind@10.20.11.162
+        ;;
+    main4|151)
+        NAME=archermind@10.20.11.151
+        ;;
+    main5|65)
+        NAME=archermind@10.20.11.65
+        ;;
 
-		##	me ##
-		vps)
-			NAME="-p 28556 root@184.170.212.253"
-		;;
-		vps1)
-			NAME="-p 28556 root@184.170.212.253"
-		;;
-		*) echo "ssh-login() Don't have this choise!"
-	esac
+    ##	me ##
+    vps)
+        NAME="-p 28556 root@184.170.212.253"
+        ;;
+    vps1)
+        NAME="-p 28556 root@184.170.212.253"
+        ;;
+    *) echo "ssh-login() Don't have this choise!"
+    esac
 
-	echo "ssh $NAME"
-	ssh $NAME
+    echo "ssh $NAME"
+    ssh $NAME
 }
 
-#=============		切换项目目录
-function switch()
-{
-	case $1 in
-		ssh)
-			ssh-login $2
-		;;
-		cd)
-			switchProjects $2
-		;;
-		flash)
-			FlashImages $2
-		;;
-		*) echo "Don't have this choise!"
-	esac
-}
-
-#=============		main()
-main()
-{
-	switch $1 $2
-}
-
-#main $1 $2
-
-
-#if [ -z $1 ]; then
-#	echo "please run \"source build/envsetup.sh\" in rootfs of source"
-#fi
-#
-
+#=============		help
 function Usages()
 {
-     echo -e  "
-     Usage: work [OPTION]... [URL]...
+    echo -e  "
+    Usage: work [OPTION]... [URL]...
 
-        -V,  --version           display the version of Wget and exit.
-        -h,  --help              print this help.
-        -s name     ssh
-        -f image    fastboot flash
-        -a          adb
-     "
+    -V,  --version           display the version of Wget and exit.
+    -h,  --help              print this help.
+    -s name     ssh
+    -f image    fastboot flash
+    -a          adb
+    "
 
 }
 
+#if [ -z $1 ];then
+#	Usages
+#	exit
+#elif ["-"!=${1:0:1}];then
 #
-#	main
 #
-
-if [ -z $1 ];then
-	Usages
-	exit
-elif ["-"!=${1:0:1}];then
-
-	
-
-fi
+#
+#fi
 
 
-echo fafas
 #function GetOpts()
 #{  
-	while getopts "s:f:h" OPTION; do
-		case $OPTION in
+while getopts "s:f:h" OPTION; do
+    case $OPTION in
 
-		h)
-		Usages
-		;;
+    h)
+        Usages
+        ;;
 
-		s)
-		ssh-login $OPTARG
-		;;
+    s)
+        ssh-login $OPTARG
+        ;;
 
-		f)
-		echo "sudo fastboot flash $OPTARG ${OPTARG}.img"
-		;;
+    f)
+        FlashImages $OPTARG
+        ;;
 
-		*)
-		Usages
-		;;
+    *)
+        Usages
+        ;;
 
-		?)
-		echo "ssh"
-		;;
+    ?)
+        echo "ssh"
+        ;;
 
-		esac
-	done
-
+    esac
+done
 #}
-
