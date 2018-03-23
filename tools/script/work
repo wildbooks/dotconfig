@@ -131,6 +131,9 @@ function ssh-login()
     yanhua|23)
         NAME=archermind@10.20.11.23
         ;;
+    fanjun|73)
+        NAME=archermind@10.20.11.73
+        ;;
 
     ##	firm server ##
     main|11)
@@ -167,6 +170,8 @@ function ssh-login()
 
     echo "ssh $NAME"
     ssh $NAME
+    #scp xx $NAME:/work
+    #scp $NAME:/work xx
 }
 
 #=============		help
