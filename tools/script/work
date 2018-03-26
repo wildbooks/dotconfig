@@ -32,6 +32,38 @@ function MakeProjects()
     echo "zore"
 }
 
+# command Gitpush	<Project>
+#=============		push
+function GitPush()
+{
+    case $1 in
+
+    # flash aboot
+    sku1)
+        NAME="sku1-ZC600KL-dev"
+        ;;
+    sku2-4)
+        NAME="sku2-4-ZD553KL-dev"
+        ;;
+    sku5)
+        NAME="sku5-ZC553KL-dev"
+        ;;
+    sku6-8)
+        NAME="sku6-8-ZC554KL-dev"
+        ;;
+    sku9-12)
+        NAME="sku9-12-ZC520KL-dev"
+        ;;
+    app)
+        NAME="asus_app_dev"
+        ;;
+    *) MyPrint $Red "Don't have this choise!"
+    esac
+
+    MyPrint $Green "git push origin HEAD:refs/for/${NAME}"
+    git push origin HEAD:refs/for/${NAME}
+}
+
 # command flash	<Project>
 #=============		刷机
 function FlashImages()
@@ -157,6 +189,9 @@ function ssh-login()
     main5|65)
         NAME=archermind@10.20.11.65
         ;;
+    gitweb|93)
+        NAME=archermind@10.20.11.93
+        ;;
 
     ##	me ##
     vps)
@@ -201,25 +236,24 @@ function Usages()
 
 #function GetOpts()
 #{  
-while getopts "s:f:h" OPTION; do
+while getopts "s:f:p:h" OPTION; do
     case $OPTION in
 
     h)
         Usages
         ;;
-
     s)
         ssh-login $OPTARG
         ;;
-
     f)
         FlashImages $OPTARG
         ;;
-
+    p)
+        GitPush $OPTARG
+        ;;
     *)
         Usages
         ;;
-
     ?)
         echo "ssh"
         ;;
