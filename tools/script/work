@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# User configs
+SRC_ROOT=/work/
+VPS_SRC_ROOT=/work/ASUS/wildbook
+
 #=============		MyPrint
 # Color
 Color_off='\033[0m'       # Text Reset
@@ -32,10 +36,40 @@ function MakeProjects()
     echo "zore"
 }
 
+# command Repo <Project>
+#=============		push
+function Repo()
+{
+    #下代码
+    #更新代码
+    #
+    case $1 in
+
+    sku1)
+        cd ${SRC_ROOT}/sku1
+        ;;
+    sku2-4)
+        cd ${SRC_ROOT}/sku2-4
+        ;;
+    sku5)
+        cd ${SRC_ROOT}/sku5
+        ;;
+    sku6-8)
+        cd ${SRC_ROOT}/sku6-8
+        ;;
+    sku9-12)
+        cd ${SRC_ROOT}/sku9-12
+        ;;
+    *) MyPrint $Red "Don't have this choise!"
+    esac
+
+    MyPrint $Green "repo sync -c --no-tags"
+    repo sync -c --no-tags  -j8
+}
+
 # command Gitpush	<Project>
 #=============		push
-function GitPush()
-{
+function GitPush() {
     case $1 in
 
     # flash aboot
@@ -129,12 +163,25 @@ function FlashImages()
     # flash modem
     *) MyPrint $Red "Don't have this choise!"
     esac
+
+    echo -e "\nAll is download,do you want to reboot(y/n) ?"
+    read x
+    if [ "$x" == "y" ] || [ "$x" == "Y" ];then
+        fastboot reboot
+    fi
 }
 
-#=============		签名
-function Flashhhhhs()
+#=============		Test
+function Test()
 {
-    echo "zore"
+    echo $(pwd)
+}
+
+#=============		Scp
+function Scp()
+{
+    NAME=archermind@10.20.11.11:/work/
+    scp $(pwd)/$1   $NAME
 }
 
 #=============		远程登录
@@ -236,7 +283,7 @@ function Usages()
 
 #function GetOpts()
 #{  
-while getopts "s:f:p:h" OPTION; do
+while getopts "s:f:p:t:h" OPTION; do
     case $OPTION in
 
     h)
@@ -250,6 +297,9 @@ while getopts "s:f:p:h" OPTION; do
         ;;
     p)
         GitPush $OPTARG
+        ;;
+    t)
+        Test
         ;;
     *)
         Usages

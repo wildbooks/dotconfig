@@ -1,0 +1,9 @@
+# 定时更新OpenGrok数据
+
+# user config
+OPENGROK_INSTANCE_BASE=
+OPENGROK_SRC_ROOT="/work/ASUS/SKU6_8_O/BP/amss"
+OPENGROK_DATA_ROOT="/work/data/SKU6_8_O/BP/amss"
+
+./OpenGrok bootstrap    #更新配置
+./OpenGrok update       #更新代码
