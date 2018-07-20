@@ -91,6 +91,9 @@ function GitPush() {
     app)
         NAME="asus_app_dev"
         ;;
+    tina)
+        NAME="Tina_DriverOnly"
+        ;;
     *) MyPrint $Red "Don't have this choise!"
     esac
 
@@ -103,71 +106,56 @@ function GitPush() {
 function FlashImages()
 {
 
-    # 1. 判断是否重启
+    # 1. 判断是否为fastboot模式
+    # adb devices
     # 2. 循环刷机
     # 3. 重启系统
+
+    ImageLists=$*
+    FASTSTATUS=$(adb devices)
+    #echo ==${FASTSTATUS}=
+    #echo ==${FASTSTATUS:24:9}==
+    if [ ! -z ${FASTSTATUS:24:9} ]; then
+        MyPrint $Green "adb reboot bootloader"
+        adb reboot bootloader
+        sleep 5 #延时5s
+    fi
+
+    FASTSTATUS=$(sudo fastboot devices)
+    #echo ==${FASTSTATUS}=
+    #echo ==${FASTSTATUS:0:9}==
+    if [ -z ${FASTSTATUS:0:9} ]; then
+        MyPrint $Red "Please in fastboot mode"
+        exit
+    fi
 
     if [ -z $ANDROID_PRODUCT_OUT ]; then
         MyPrint $Red "please run \"source build/envsetup.sh\" in rootfs of source"
         exit
     fi
 
-    #ANDROID_BUILD_TOP 代码根目录
-    #ANDROID_PRODUCT_OUT
-    #if [ -z android ];then
-    #	mkdir -p /tmp/android
-    #fi
+    for Image in $ImageLists
+    do
 
-    aNum=$1
-    #case $1 in
-    #	sku1)
-    #		ANDROID_PRODUCT_OUT=/work/sku1/out/target/product/msm8937_64
-    #	;;
-    #	sku2)
-    #		ANDROID_PRODUCT_OUT=/work/sku2/out/target/product/msm8937_64
-    #	;;
-    #	sku5)
-    #		ANDROID_PRODUCT_OUT=/work/sku5/out/target/product/msm8937_64
-    #	;;
-    #	sku6)
-    #		ANDROID_PRODUCT_OUT=/work/sku6/out/target/product/msm8937_64
-    #	;;
-    #	sku9)
-    #		ANDROID_PRODUCT_OUT=/work/sku9/out/target/product/msm8937_64
-    #	;;
-    #	*)
-    #		ANDROID_PRODUCT_OUT=/work/SKU5_BP_8940_O_sign_wingtech/out/target/product/msm8937_64
-    #	;;
-    #esac
+        if [ "-" == ${Image:0:1} ]; then
+            continue
+        fi
 
-    case $aNum in	#用循环解决这个问题
+        # Flash Image
+        if [ "aboot" == $Image ]; then
+            MyPrint $Green "sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn"
+            sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
+        else
+            MyPrint $Green "sudo fastboot flash $Image $ANDROID_PRODUCT_OUT/$Image.img"
+            sudo fastboot flash $Image $ANDROID_PRODUCT_OUT/$Image.img
+        fi
 
-    # flash aboot
-    aboot)  MyPrint $Green "flashing boot"
-        sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
-        ;;
-    reaboot)  MyPrint $Green "rebooting && flashing aboot"
-        adb reboot-bootloader && sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
-        ;;
-
-    # flash image
-    boot|system|userdata|recovery|cache)
-        MyPrint $Green "sudo fastboot flash $aNum $ANDROID_PRODUCT_OUT/$aNum.img"
-        sudo fastboot flash $aNum $ANDROID_PRODUCT_OUT/$aNum.img
-        ;;
-    # reboot && flash image
-    reboot|resystem|reuserdata|rerecovery|recache)
-        MyPrint $Green "adb reboot-bootloader && sudo fastboot flash ${aNum:2} $ANDROID_PRODUCT_OUT/${aNum:2}.img"
-        adb reboot-bootloader && sudo fastboot flash ${aNum:2} $ANDROID_PRODUCT_OUT/${aNum:2}.img
-        ;;
-    # flash modem
-    *) MyPrint $Red "Don't have this choise!"
-    esac
+    done
 
     echo -e "\nAll is download,do you want to reboot(y/n) ?"
     read x
     if [ "$x" == "y" ] || [ "$x" == "Y" ];then
-        fastboot reboot
+        sudo fastboot reboot
     fi
 }
 
@@ -212,6 +200,9 @@ function ssh-login()
         ;;
     fanjun|73)
         NAME=archermind@10.20.11.73
+        ;;
+    hongchang|197)
+        NAME=archermind@10.20.11.197
         ;;
 
     ##	firm server ##
@@ -293,7 +284,7 @@ while getopts "s:f:p:t:h" OPTION; do
         ssh-login $OPTARG
         ;;
     f)
-        FlashImages $OPTARG
+        FlashImages $*
         ;;
     p)
         GitPush $OPTARG
