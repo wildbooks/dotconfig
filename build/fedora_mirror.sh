@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+ROOTDIR=$(echo $(cd $(dirname $0) && pwd) | sed 's/\/build\/fedora_mirror.sh//g')
+
 #Fedora
 sudo wget -O /etc/yum.repos.d/fedora.repo http://mirrors.aliyun.com/repo/fedora.repo
 sudo wget -O /etc/yum.repos.d/fedora-updates.repo http://mirrors.aliyun.com/repo/fedora-updates.repo
@@ -6,10 +9,10 @@ sudo rpm -Uvh http://mirrors.aliyun.com/rpmfusion/free/fedora/rpmfusion-free-rel
 sudo rpm -Uvh http://mirrors.aliyun.com/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-26.noarch.rpm
 
 #FZUG
-sudo wget http://repo.fdzh.org/FZUG/FZUG.repo -P /etc/yum.repos.d/ 
+sudo wget http://repo.fdzh.org/FZUG/FZUG.repo -P /etc/yum.repos.d/
 
 #google-chrome
-sudo wget https://repo.fdzh.org/chrome/google-chrome-mirrors.repo -P /etc/yum.repos.d/  # Fedora/RHEL  
+sudo wget https://repo.fdzh.org/chrome/google-chrome-mirrors.repo -P /etc/yum.repos.d/  # Fedora/RHEL
 
 # 卸载多余软件
 sudo dnf remove firefox gnome-maps gedit gnome-contacts rhythmbox -y
@@ -25,7 +28,9 @@ cmd_exists()
   `command -v $1`
   printf $?
 }
+
 get_cmd()
 {
-  printf `command -v dnf`|| `command -v yum`|| `command -v apt-get`
+    printf $(command -v dnf|| command -v yum|| command -v apt-get)
 }
+CMD=$(get_cmd)

@@ -1,3 +1,4 @@
+ROOTDIR=`echo $0 | sed 's/\/install.sh//g'`
 
 # Switch to using brew-installed bash as default shell
 if ! fgrep -q '/usr/bin/bash' /etc/shells; then

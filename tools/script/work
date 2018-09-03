@@ -1,25 +1,15 @@
-#! /bin/bash
+#!/usr/bin/env bash
+ROOTDIR=$(echo $(cd $(dirname $0) && pwd) | sed 's/\/tools\/script//g')
+CURRENTDIR=$(dirname $0)
+
+source $ROOTDIR/build/init.sh
 
 # User configs
 SRC_ROOT=/work/
 VPS_SRC_ROOT=/work/ASUS/wildbook
+LOCALPATH=$(pwd)
+#CURRENTFILE=`$0`
 
-#=============		MyPrint
-# Color
-Color_off='\033[0m'       # Text Reset
-Black='\033[0;30m'              # Black黑
-Red='\033[0;31m'                # Red
-Green='\033[0;32m'              # Green绿
-Yellow='\033[0;33m'             # Yellow黄
-Blue='\033[0;34m'               # Blue蓝色
-Purple='\033[0;35m'             # Purple紫色
-SkyBlue='\033[0;36m'            # SkyBlue天蓝色
-White='\033[0;37m'              # White白色
-
-function MyPrint()
-{
-    echo -e "$1$2${Color_off}\t"
-}
 
 
 # command cd	<Project>
@@ -60,10 +50,10 @@ function Repo()
     sku9-12)
         cd ${SRC_ROOT}/sku9-12
         ;;
-    *) MyPrint $Red "Don't have this choise!"
+    *) WARN "Don't have this choise!"
     esac
 
-    MyPrint $Green "repo sync -c --no-tags"
+    INFO "repo sync -c --no-tags"
     repo sync -c --no-tags  -j8
 }
 
@@ -94,10 +84,10 @@ function GitPush() {
     tina)
         NAME="Tina_DriverOnly"
         ;;
-    *) MyPrint $Red "Don't have this choise!"
+    *) WARN "Don't have this choise!"
     esac
 
-    MyPrint $Green "git push origin HEAD:refs/for/${NAME}"
+    INFO "git push origin HEAD:refs/for/${NAME}"
     git push origin HEAD:refs/for/${NAME}
 }
 
@@ -111,29 +101,35 @@ function FlashImages()
     # 2. 循环刷机
     # 3. 重启系统
 
-    ImageLists=$*
-    FASTSTATUS=$(adb devices)
+    local ImageLists=$*
+    local FASTSTATUS=$(adb devices)
     #echo ==${FASTSTATUS}=
     #echo ==${FASTSTATUS:24:9}==
     if [ ! -z ${FASTSTATUS:24:9} ]; then
-        MyPrint $Green "adb reboot bootloader"
+        INFO "adb reboot bootloader"
         adb reboot bootloader
         sleep 5 #延时5s
     fi
 
-    FASTSTATUS=$(sudo fastboot devices)
+    local FASTSTATUS=$(echo "archermind" | sudo -S fastboot devices)
     #echo ==${FASTSTATUS}=
     #echo ==${FASTSTATUS:0:9}==
     if [ -z ${FASTSTATUS:0:9} ]; then
-        MyPrint $Red "Please in fastboot mode"
+        ERROR "\nPlease in fastboot mode"
         exit
     fi
 
     if [ -z $ANDROID_PRODUCT_OUT ]; then
-        MyPrint $Red "please run \"source build/envsetup.sh\" in rootfs of source"
-        exit
+        INFO "\nDo you want to use default \"\$ANDROID_PRODUCT_OUT\"(y/n) ?"
+        read x
+        if [ "$x" == "y" ] || [ "$x" == "Y" ];then
+            ANDROID_PRODUCT_OUT="/work/temp"
+        else
+            exit
+        fi
     fi
 
+    local CMD
     for Image in $ImageLists
     do
 
@@ -143,16 +139,15 @@ function FlashImages()
 
         # Flash Image
         if [ "aboot" == $Image ]; then
-            MyPrint $Green "sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn"
-            sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn
+            CMD="sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn"
         else
-            MyPrint $Green "sudo fastboot flash $Image $ANDROID_PRODUCT_OUT/$Image.img"
-            sudo fastboot flash $Image $ANDROID_PRODUCT_OUT/$Image.img
+            CMD="sudo fastboot flash $Image $ANDROID_PRODUCT_OUT/$Image.img"
         fi
-
+        INFO "$CMD"
+        $($CMD)
     done
-
-    echo -e "\nAll is download,do you want to reboot(y/n) ?"
+    spd-say "download ok"
+    INFO "\nAll is download,do you want to reboot(y/n) ?"
     read x
     if [ "$x" == "y" ] || [ "$x" == "Y" ];then
         sudo fastboot reboot
@@ -162,7 +157,7 @@ function FlashImages()
 #=============		Test
 function Test()
 {
-    echo $(pwd)
+    WARN "It's Test"
 }
 
 #=============		Scp
@@ -238,13 +233,21 @@ function ssh-login()
     vps1)
         NAME="-p 28556 root@184.170.212.253"
         ;;
-    *) echo "ssh-login() Don't have this choise!"
+    *) ERROR "ssh-login() Don't have this choise!"
     esac
 
-    echo "ssh $NAME"
+    INFO "ssh $NAME"
     ssh $NAME
-    #scp xx $NAME:/work
-    #scp $NAME:/work xx
+}
+
+function WifiAdbConnect()
+{
+
+    adb root
+    adb remount
+    adb tcpip 5555
+    sleep 2
+    adb connect $1
 }
 
 #=============		help
@@ -257,24 +260,16 @@ function Usages()
     -h,  --help              print this help.
     -s name     ssh
     -f image    fastboot flash
-    -a          adb
+    -p name     git push origin HEAD:refs/for/${NAME}
+    -a          adb connect on wifi
     "
 
 }
 
-#if [ -z $1 ];then
-#	Usages
-#	exit
-#elif ["-"!=${1:0:1}];then
-#
-#
-#
-#fi
-
 
 #function GetOpts()
 #{  
-while getopts "s:f:p:t:h" OPTION; do
+while getopts "s:f:p:ta:h" OPTION; do
     case $OPTION in
 
     h)
@@ -288,6 +283,9 @@ while getopts "s:f:p:t:h" OPTION; do
         ;;
     p)
         GitPush $OPTARG
+        ;;
+    a)
+        WifiAdbConnect $OPTARG
         ;;
     t)
         Test
