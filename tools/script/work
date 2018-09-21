@@ -228,7 +228,7 @@ function ssh-login()
 
     ##	me ##
     vps)
-        NAME="-p 28556 root@184.170.212.253"
+        NAME="-p 28556 wildbook@184.170.212.253"
         ;;
     vps1)
         NAME="-p 28556 root@184.170.212.253"

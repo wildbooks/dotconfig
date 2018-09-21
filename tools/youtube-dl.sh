@@ -1,6 +1,8 @@
-#! /usr/bin/bash
+#!/usr/bin/env bash
+ROOTDIR=$(echo $(cd $(dirname $0) && pwd) | sed 's/\/tools\/script//g')
+CURRENTDIR=$(dirname $0)
 
-CMD=dnf
+source $ROOTDIR/build/init.sh
 
 # First install tmux tmuxinator
 type youtube-dl >/dev/null 2>&1
