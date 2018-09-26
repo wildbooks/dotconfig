@@ -66,6 +66,9 @@ function GitPush() {
     sku1)
         NAME="sku1-ZC600KL-dev"
         ;;
+    sku1p)
+        NAME="pie_sku1_ZC600KL_dev_bsp"
+        ;;
     sku2-4)
         NAME="sku2-4-ZD553KL-dev"
         ;;
@@ -107,7 +110,7 @@ function FlashImages()
     #echo ==${FASTSTATUS:24:9}==
     if [ ! -z ${FASTSTATUS:24:9} ]; then
         INFO "adb reboot bootloader"
-        adb reboot bootloader
+        sudo "archermind" | sudo -S adb reboot bootloader
         sleep 5 #延时5s
     fi
 
@@ -154,73 +157,36 @@ function FlashImages()
     fi
 }
 
-#=============		Test
-function Test()
-{
-    WARN "It's Test"
-}
-
-#=============		Scp
-function Scp()
-{
-    NAME=archermind@10.20.11.11:/work/
-    scp $(pwd)/$1   $NAME
-}
-
 #=============		远程登录
 function ssh-login()
 {
     case $1 in
     ##	firm ##
-    sunqian|51)
-        NAME=archermind@10.20.11.51
-        ;;
-    lize|183)
-        NAME=archermind@10.20.11.183
-        ;;
+    [1-9]*)
+        NAME="archermind@10.20.11.$1"
+         ;;
     chunhua|192)
         NAME=root@10.20.11.192 #111
         ;;
-    youcun|21)
+    youcun)
         NAME=archermind@10.20.11.21
         ;;
-    songpeng|114)
+    songpeng)
         NAME=archermind@10.20.11.114
         ;;
-    zhanglei|79)
+    zhanglei)
         NAME=archermind@10.20.11.79
         ;;
-    yanhua|23)
+    yanhua)
         NAME=archermind@10.20.11.23
         ;;
-    fanjun|73)
+    fanjun)
         NAME=archermind@10.20.11.73
-        ;;
-    hongchang|197)
-        NAME=archermind@10.20.11.197
         ;;
 
     ##	firm server ##
-    main|11)
+    main)
         NAME=archermind@10.20.11.11
-        ;;
-    main0|10)
-        NAME=archermind@10.20.11.10
-        ;;
-    main1|116)
-        NAME=archermind@10.20.11.116
-        ;;
-    main2|56)
-        NAME=archermind@10.20.11.56
-        ;;
-    main3|162)
-        NAME=archermind@10.20.11.162
-        ;;
-    main4|151)
-        NAME=archermind@10.20.11.151
-        ;;
-    main5|65)
-        NAME=archermind@10.20.11.65
         ;;
     gitweb|93)
         NAME=archermind@10.20.11.93
@@ -240,9 +206,81 @@ function ssh-login()
     ssh $NAME
 }
 
+
+# work -c sname src dest (copy to server)
+# work -c cname src dest (copy to local)
+function scp-server()
+{
+    local CMD NAME
+    local src=$2
+    local dest=$3
+
+    case ${1:1} in
+    ##	firm ##
+    [1-9]*)
+        NAME=archermind@10.20.11.$1
+        ;;
+    sunqian)
+        NAME=archermind@10.20.11.51
+        ;;
+    youcun)
+        NAME=archermind@10.20.11.21
+        ;;
+    songpeng)
+        NAME=archermind@10.20.11.114
+        ;;
+    zhanglei)
+        NAME=archermind@10.20.11.79
+        ;;
+    yanhua)
+        NAME=archermind@10.20.11.23
+        ;;
+    fanjun)
+        NAME=archermind@10.20.11.73
+        ;;
+    haifeng)
+        NAME=archermind@10.20.11.80
+        ;;
+    hongchang)
+        NAME=archermind@10.20.11.197
+        ;;
+
+    ##	firm server ##
+    main)
+        NAME=archermind@10.20.11.11
+        ;;
+    main0)
+        NAME=archermind@10.20.11.10
+        ;;
+
+    ##	me ##
+    vps)
+        NAME="-p 28556 root@184.170.212.253"
+        NAME="-P 28556 wildbook@184.170.212.253"
+        ;;
+    vps1)
+        NAME="-p 28556 root@184.170.212.253"
+        NAME="-P 28556 root@184.170.212.253"
+        ;;
+    *) ERROR "scp-server() Don't have this choise!"
+    esac
+
+    INFO "ssh $NAME"
+    ssh $NAME
+    if [ "s" == ${1:0:1} ]; then
+        CMD="scp -r $src $NAME:$dest"
+    else
+        CMD="scp -r $NAME:$src $dest"
+    fi
+
+    INFO "$CMD"
+    $($CMD)
+}
+ 
+ 
+
 function WifiAdbConnect()
 {
-
     adb root
     adb remount
     adb tcpip 5555
@@ -259,17 +297,16 @@ function Usages()
     -V,  --version           display the version of Wget and exit.
     -h,  --help              print this help.
     -s name     ssh
+    -c          work -c sserver src dest (copy to server)
+                work -c cserver src dest (copy to local)
     -f image    fastboot flash
     -p name     git push origin HEAD:refs/for/${NAME}
-    -a          adb connect on wifi
-    "
+    -a          adb connect on wifi"
 
 }
 
 
-#function GetOpts()
-#{  
-while getopts "s:f:p:ta:h" OPTION; do
+while getopts "hs:c:f:p:a:t" OPTION; do
     case $OPTION in
 
     h)
@@ -277,6 +314,9 @@ while getopts "s:f:p:ta:h" OPTION; do
         ;;
     s)
         ssh-login $OPTARG
+        ;;
+    c)
+        scp-server $2 $3 $4
         ;;
     f)
         FlashImages $*
@@ -299,4 +339,3 @@ while getopts "s:f:p:ta:h" OPTION; do
 
     esac
 done
-#}

@@ -1,7 +1,8 @@
-#! /usr/bin/bash
+#!/usr/bin/env bash
+ROOTDIR=$(echo $(cd $(dirname $0) && pwd) | sed 's/\/tools\/vim\/install.sh//g')
+CURRENTDIR=$(dirname $0)
 
-CMD=dnf
-HOME=/home/`whoami`
+source $ROOTDIR/build/init.sh
 VIMFILES_PATH=.cache/vimfiles
 
 # First install nvim
