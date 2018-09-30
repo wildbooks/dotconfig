@@ -218,7 +218,7 @@ function scp-server()
     case ${1:1} in
     ##	firm ##
     [1-9]*)
-        NAME=archermind@10.20.11.$1
+        NAME=archermind@10.20.11.${1:1}
         ;;
     sunqian)
         NAME=archermind@10.20.11.51
@@ -255,18 +255,15 @@ function scp-server()
 
     ##	me ##
     vps)
-        NAME="-p 28556 root@184.170.212.253"
+        #NAME="-p 28556 root@184.170.212.253"
         NAME="-P 28556 wildbook@184.170.212.253"
         ;;
     vps1)
-        NAME="-p 28556 root@184.170.212.253"
         NAME="-P 28556 root@184.170.212.253"
         ;;
     *) ERROR "scp-server() Don't have this choise!"
     esac
 
-    INFO "ssh $NAME"
-    ssh $NAME
     if [ "s" == ${1:0:1} ]; then
         CMD="scp -r $src $NAME:$dest"
     else
