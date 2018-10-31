@@ -5,7 +5,7 @@ CURRENTDIR=$(dirname $0)
 source $ROOTDIR/build/init.sh
 
 # Install shadowsocks
-
+sudo pip3 install shadowsocks
 # config shadowsocks
 ConfigShadowsocks(){
 cat >/etc/shadowsocks.json <<EOF

@@ -6,7 +6,7 @@ CMD=dnf
 type autojump
 if [ ! $? ]; then #null
   sudo $CMD install autojump
-  echo 'source /usr/share/autojump/autojump.bash'>> ~/.bashrc 
+  echo '[[ -s /usr/share/autojump/autojump.bash ]] && . /usr/share/autojump/autojump.bash' >>~/.bashrc
   source ~/.bashrc
 else
   echo "autojump has installed"

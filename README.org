@@ -1,2 +1,16 @@
 * dotconfig
   本配置开始于2016.11月份
+* 工具集
+  | 工具名      | 功能                              | 项目地址                                |
+  |-------------+-----------------------------------+-----------------------------------------|
+  | autojump    |                                   | https://github.com/wting/autojump       |
+  | emacs       |                                   |                                         |
+  | tmux        |                                   |                                         |
+  | neovim      |                                   |                                         |
+  | BaiduPCS-Go | linux cli版百度云客户端           | https://github.com/iikira/BaiduPCS-Go   |
+  | bat         | 最好的cat替代工具                 | https://github.com/sharkdp/bat          |
+  | musicbox    | linux cli版网易音乐客户端         | https://github.com/darknessomi/musicbox |
+  | fzf         | fzf是一种通用的命令行模糊查找器。 | https://github.com/junegunn/fzf         |
+  | aria2       |                                   | https://github.com/aria2/aria2          |
+  | rtorrent    |                                   | https://github.com/rakshasa/rtorrent    |
+  |             |                                   |                                         |
