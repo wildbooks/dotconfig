@@ -3,6 +3,7 @@ source ../../functions.sh
 
 # First install emacs
 sudo  $CMD install emacs
+sudo  $CMD install adobe-source-code-pro-fonts
 # 官方配置
 git clone https://github.com/syl20bnr/spacemacs.git -b develop
 # 子龙山人的配置
