@@ -62,30 +62,45 @@ function Repo()
 function GitPush() {
     case $1 in
 
-    # flash aboot
+    # Push
     sku1)
         NAME="sku1-ZC600KL-dev"
         ;;
     sku1p)
-        NAME="pie_sku1_ZC600KL_dev_bsp"
+        NAME="pie_sku1_ZC600KL_dev"
         ;;
     sku2-4)
-        NAME="sku2-4-ZD553KL-dev"
+        NAME="sku2-4-ZD553KL-MR"
+        ;;
+    sku2-4p)
+        NAME="AOSP_pie_sku2-4_ZD553KL_dev"
         ;;
     sku5)
-        NAME="sku5-ZC553KL-dev"
+        NAME="sku5-ZC553KL-MR"
         ;;
     sku6-8)
-        NAME="sku6-8-ZC554KL-dev"
+        NAME="sku6-8-ZC554KL-MR"
+        ;;
+    sku6-8p)
+        NAME="AOSP_pie_sku6-8_ZC554KL_dev"
         ;;
     sku9-12)
-        NAME="sku9-12-ZC520KL-dev"
+        NAME="sku9-12-ZC520KL-MR"
+        ;;
+    sku9-12p)
+        NAME="AOSP_pie_sku9-12_ZC520KL_dev"
         ;;
     app)
         NAME="asus_app_dev"
         ;;
     tina)
         NAME="Tina_DriverOnly"
+        ;;
+    555)
+        NAME="pie_ZB555KL_dev"
+        ;;
+    550)
+        NAME="pie_ZA550KL_dev"
         ;;
     *) WARN "Don't have this choise!"
     esac
@@ -110,11 +125,11 @@ function FlashImages()
     #echo ==${FASTSTATUS:24:9}==
     if [ ! -z ${FASTSTATUS:24:9} ]; then
         INFO "adb reboot bootloader"
-        sudo "archermind" | sudo -S adb reboot bootloader
+        adb reboot bootloader
         sleep 5 #延时5s
     fi
 
-    local FASTSTATUS=$(echo "archermind" | sudo -S fastboot devices)
+    local FASTSTATUS=$(fastboot devices)
     #echo ==${FASTSTATUS}=
     #echo ==${FASTSTATUS:0:9}==
     if [ -z ${FASTSTATUS:0:9} ]; then
@@ -142,9 +157,9 @@ function FlashImages()
 
         # Flash Image
         if [ "aboot" == $Image ]; then
-            CMD="sudo fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn"
+            CMD="fastboot flash aboot $ANDROID_PRODUCT_OUT/emmc_appsboot.mbn"
         else
-            CMD="sudo fastboot flash $Image $ANDROID_PRODUCT_OUT/$Image.img"
+            CMD="fastboot flash $Image $ANDROID_PRODUCT_OUT/$Image.img"
         fi
         INFO "$CMD"
         $($CMD)
@@ -153,7 +168,7 @@ function FlashImages()
     INFO "\nAll is download,do you want to reboot(y/n) ?"
     read x
     if [ "$x" == "y" ] || [ "$x" == "Y" ];then
-        sudo fastboot reboot
+      fastboot reboot
     fi
 }
 
@@ -180,24 +195,33 @@ function ssh-login()
     yanhua)
         NAME=archermind@10.20.11.23
         ;;
-    fanjun)
-        NAME=archermind@10.20.11.73
+    yukai)
+        NAME=archermind@10.20.25.41
         ;;
+
 
     ##	firm server ##
     main)
         NAME=archermind@10.20.11.11
         ;;
+    jenkins)
+        NAME=jenkins@10.20.11.12
+        ;;
     gitweb|93)
         NAME=archermind@10.20.11.93
         ;;
-
+    me|114)
+        NAME=archermind@10.20.25.56
+        ;;
     ##	me ##
     vps)
         NAME="-p 28556 wildbook@184.170.212.253"
         ;;
     vps1)
         NAME="-p 28556 root@184.170.212.253"
+        ;;
+    bin)
+        NAME="-p 26537 root@172.96.247.84"
         ;;
     *) ERROR "ssh-login() Don't have this choise!"
     esac
@@ -239,7 +263,7 @@ function scp-server()
         NAME=archermind@10.20.11.73
         ;;
     haifeng)
-        NAME=archermind@10.20.11.80
+        NAME=archermind@10.20.11.22
         ;;
     hongchang)
         NAME=archermind@10.20.11.197
@@ -264,6 +288,7 @@ function scp-server()
     *) ERROR "scp-server() Don't have this choise!"
     esac
 
+    # 如果需要密码，copy公钥后，再传数据
     if [ "s" == ${1:0:1} ]; then
         CMD="scp -r $src $NAME:$dest"
     else
